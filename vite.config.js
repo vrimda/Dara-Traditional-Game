@@ -3,12 +3,5 @@ import react from '@vitejs/plugin-react'
 
 export default defineConfig({
   plugins: [react()],
-  base: '/',
-  build: {
-    outDir: 'dist',
-    minify: true,
-  },
-  server: {
-    port: 3000,
-  },
+  base: '/Dara-Traditional-Game/'  // <-- this line is critical
 })

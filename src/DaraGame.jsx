@@ -413,6 +413,7 @@ export default function DaraGame(){
   const [sh,setSH]           = useState(K);
   const [g,setG]             = useState(null);
   const [thinking,setThink]  = useState(false);
+  const thinkingRef          = useRef(false);
   const [showRules,setRules] = useState(false);
   const [showAd,setAd]       = useState(false);
   const nextShRef            = useRef(K);
@@ -424,9 +425,10 @@ export default function DaraGame(){
     if(!g||g.phase==='over'||mode!=='vs_computer') return;
     if(g.turn!==compSide&&g.phase!=='capture') return;
     if(g.phase==='capture'&&g.turn!==compSide) return; // capture after AI scored
-    if(thinking) return;
+    if(thinkingRef.current) return;
 
     const delay=diff==='expert'?850:diff==='moderate'?600:400;
+    thinkingRef.current = true;
     setThink(true);
     const t=setTimeout(()=>{
       setG(prev=>{
@@ -456,10 +458,11 @@ export default function DaraGame(){
         }
         return prev;
       });
+      thinkingRef.current = false;
       setThink(false);
     },delay);
-    return()=>clearTimeout(t);
-  },[g?.turn,g?.phase,thinking,mode,compSide,diff]);
+    return()=>{ clearTimeout(t); thinkingRef.current = false; };
+  },[g?.turn,g?.phase,mode,compSide,diff]);
 
   const launch=useCallback((ver,stickHolder)=>{
     setSH(stickHolder);
